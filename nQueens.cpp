@@ -1,15 +1,19 @@
+
 #include<iostream>
 #include<stdbool.h>
 using namespace std;
 
+static int count=1;
 
 void print(int ** b,int n){
+
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             cout << b[i][j] << " ";
         }
         cout << "\n";
     }
+    cout << "\n";
 }
 
 bool check(int ** b,int row,int col,int n){
@@ -38,19 +42,23 @@ bool check(int ** b,int row,int col,int n){
 }
 
 bool chessBoard(int ** b,int q,int n){
-    if(q >= n){
+    if(q == n){
+        cout << "Solution " << count++ << " :\n";
+        print(b,n);
          return true;
     }
+    bool res = false; 
     for(int i=0 ;i < n; i++){
         if(check(b,i,q,n)){
             b[i][q] = 1;
-            if(chessBoard(b,q+1,n)){
-                return true;
-            }
+            // if(chessBoard(b,q+1,n)){
+            //     return true;
+            // }
+            res = chessBoard(b, q + 1,n) || res; 
             b[i][q] = 0;
         }
     }
-    return false;
+    return res;
 }
 
 int main(){
@@ -66,8 +74,6 @@ int main(){
     //for first queen start from col 0
     if(!chessBoard(board,0,n)){
         cout << "No Solution exists";
-    }else{
-        print(board,n);
     }
 
 }
