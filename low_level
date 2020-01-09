@@ -1,0 +1,16 @@
+ START   100
+  MOVER CREG,B
+  C    DC 2
+  MOVEM   BREG,='1'
+NUM DS      1
+   ADD     AREG,='2'
+   SUB     BREG,='1'
+B   EQU     NUM+10
+   LTORG 
+   MOVER  AREG,='1'
+   ORIGIN  B+600
+  MOVER   CREG,LOOP
+  MOVER   CREG,NUM
+   ADD     BREG,='1'
+LOOP    DC 2
+   END
