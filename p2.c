@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-int lc = 0;
+int lc = 0,ltorg=0;
 char add[20]={'\0'};
 char* read_from_sym_tab(int index){
 	FILE *f;
@@ -19,6 +19,44 @@ char* read_from_sym_tab(int index){
 	return add;
 }       
 
+void reach_end_of_lit(int index){
+	FILE *f;
+	char a[20],b[20],c[20],d[20]={'\0'};
+	int i;
+	f = fopen("lit_file","r");
+	for(i = 0;i<index+1 ;i++){
+		fscanf(f,"%s\t%s\t%s",a,b,c);
+	}
+	strcpy(a,d);strcpy(b,d);strcpy(c,d);
+	while(fscanf(f,"%s\t%s\t%s",a,b,c)!= EOF){
+		lc++;
+	}
+	fclose(f);
+}
+
+void inc_lc_for_ltorg(int i){
+	char a[10];
+	int i1 = 0 , i2 = 0 ,i3 = i;
+	FILE *f;
+	f = fopen("pool_file","r");
+	fscanf(f,"%s",a);
+	i3 = i+1;
+	while(i3--){
+		fscanf(f,"%s",a);
+		if(i3 == 1){
+			i1 = atoi(a);
+		}else if(i3 == 0){
+			i2 = atoi(a);
+		}
+	}
+	if(i1 == i2){
+		reach_end_of_lit(i1);
+	}else{
+		lc = lc + i2 - i1;
+	}
+	fclose(f);
+}
+
 char* read_from_lit_tab(int index){
 FILE *f;
 	char a[20],b[20],c[20],d[20]={'\0'};
@@ -34,11 +72,26 @@ FILE *f;
 	return add;
 }
 
+int seperate(char a[10]){
+int c = 0;
+	char *t = strtok(a,"(,)");
+	while(t != NULL){
+		if(strcmp(t,"S") ){
+			c++;
+		}
+		if(c != 0){
+			lc = atoi(read_from_sym_tab(atoi(t)));
+		}
+		t = strtok(NULL,"(,)");
+	}
+}
+
 void generate_mac_code(char a[20],char b[20]){
-	char *token = NULL;
+	char *token = NULL,*t = NULL;
 	FILE *f;
 	int op = 0;
-	int i =0 ,index=0,mem_op;
+	int i =0 ,index=0,mem_op,c=0;
+	char temp[10]= {'\0'},temp2[10]={'\0'};
 	char code[5]={'\0'},opcode[2]={'\0'},reg[2]={'\0'};
 	token = strtok(a,"(,)");
 	while(token != NULL){
@@ -73,13 +126,29 @@ void generate_mac_code(char a[20],char b[20]){
 			i = 0;
 			token = strtok(b,"+");
 			while(token != NULL){
-				printf("%s\t",token);
+				//seperate(temp);
+				if(temp[0] == '\0'){
+					strcpy(temp,token);
+				}else{
+					strcpy(temp2,token);
+				}
+				
 				token = strtok(NULL,"+");
 			}
+			printf("%d)\t",lc);
+			seperate(temp);
+			lc += atoi(temp2);
 			printf("\n");
 		}
+		else if(strcmp("5",opcode) == 0){
+			printf("%d)\n",lc);
+			ltorg++;
+			inc_lc_for_ltorg(ltorg);
+		}else{
+			printf("%d)\n",lc);
+		}
 		//f = fopen("output2","a");
-		printf("%d)\n",lc);
+		
 		//fclose(f);
 		return;
 	}
