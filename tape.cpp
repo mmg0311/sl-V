@@ -12,6 +12,7 @@ int main(){
 	cin >> n;
 	cout << "ENTER M(no. of tapes) :" ;
 	cin >> m;
+	vector< vector<int> > s(m);
 	cout << "ENTER THE PARADIGMS :";
 	for(int i = 0 ; i < n ; i++){
 		cin >> temp;
@@ -25,12 +26,39 @@ int main(){
 	cout << "IS IT A ROUND ROBIN IF YES(ENTER 1) IF NO(ENTER 0) : " ;
 	cin >> rr;
 	sort(l.begin(),l.end());
+	for(int i = 0; i < n ; i++){
+		cout << l[i] << " ";
+	}
+	cout << endl;
 	sum.push_back(0);
+	for(int  i = 0; i < m ; i++){
+		s[i].push_back(0);
+	}
 	for(int i = 0 ; i < n ; i++){
 		if(rr == 1){
 			//ROUND ROBIN
 			j = i%m;
-			cout << j << endl;
+			ptr = s[j].end()-1;
+			if((*ptr + l[i]) <= c[j]){
+				s[j].push_back(*ptr + l[i]);
+				//cout << j << " " << (*ptr + l[i]) << endl; 
+			}else{
+				temp = j;
+				while((*ptr + l[i]) > c[temp]){
+					temp++;
+					if(temp >= m){
+						temp= 0;
+					}
+					if(temp == j){
+						break;
+					}
+				}
+				if(temp != j){
+					ptr = s[temp].end()-1;
+					s[temp].push_back(*ptr + l[i]);
+					//cout << temp << " " << (*ptr + l[i]) << endl;
+				}
+			}
 		}
 		else{
 			ptr = sum.end()-1;
@@ -51,6 +79,16 @@ int main(){
 				}
 			}
 		}
+	}
+	if(count == 0){
+		for(int i = 0 ; i < m ;i++){
+			temp = accumulate(s[i].begin(),s[i].end(),0);
+			count = s[i].size();
+			count--;
+			cout << "Tape no.:"  << i+1 <<  " count : " << count << " sum : " << temp << endl ;
+			mrt = temp/(double)count;
+			cout << "MRT = " << mrt << endl;
+			}
 	}
 	
 }
