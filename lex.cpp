@@ -279,3 +279,21 @@ int main(){
 	f.close();
 	return 0;
 }
+/*
+	input code(input.c)
+#include<stdio.h>
+
+void main(){
+    int a,b,c;
+    b = 1;
+    c = 2;
+    a = b + c;
+    printf("a = %d",a);
+    if(c <= b){
+        printf("c is lesser than b");
+    }else{
+        printf("c is greater than b");
+    }
+}
+
+*/
